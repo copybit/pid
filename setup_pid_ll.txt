@@ -1,0 +1,9 @@
+kp,ki,kd,TfTs=setup_pid_ll(K,Ti,Td,Ts,Tf)
+  #Discrete-time PID parameters
+  kp=K
+  ki=K/Ti*Ts
+  kd=K*Td/Ts
+  
+  #Filter parameter
+  TfTs=Tf/Ts 
+end

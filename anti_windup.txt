@@ -1,0 +1,9 @@
+Dui=anti_windup(Dui,windup)
+  #Prevent increase, decrease, or both
+  if windup==both or windup==lower
+    Dui=max(Dui,0) 
+  end
+  if windup==both or windup==upper
+    Dui=min(Dui,0)
+  end
+end

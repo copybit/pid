@@ -1,0 +1,40 @@
+PID(r,y;auto,windup,uaux,track,Tx=1.0)
+  #Initialize parameter states
+  persistent kp,ki,kd,umin,umax
+
+  #Filter updates
+  rf=Fr(r,Tx)
+  yf,dyf=Fy(y,Tx)
+
+  #Initialize signal states
+  persistent u,ef1,dyf1,uaux1  
+
+  if auto
+    #Track uaux if tracking
+    if track
+      u=uaux
+    end
+  
+    #Control signal increment
+    protect kp,ki,kd
+    Dup=kp*(rf-yf-ef1)
+    Dui=anti_windup(ki*(r-yf)*Tx,windup)
+    Dud=-kd*(dyf-dyf1)/Tx
+    unprotect kp,ki,kd
+    Duaux=uaux-uaux1
+    Du=Dup+Dui+Dud+Duaux
+
+    u=u+Du #Add control signal increment
+    uaux1=uaux
+  else
+    u=uaux #Manual control signal
+  end
+
+  #Saturate and issue control signal
+  u=max(min(u,umax),umin)
+  set_u(u) 
+
+  #Update signal states
+  ef1=rf-yf
+  dyf1=dyf
+end

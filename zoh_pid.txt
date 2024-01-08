@@ -1,0 +1,15 @@
+a11,a12,a21,a22,b1,b2=zoh_Fy(TfTs;Tx=1.0)
+  #Help variables
+  h1=Tx/TfTs
+  h2=exp(-h1)
+  h3=h1*h2
+  h4=h3/TfTs
+
+  #Filter parameters
+  a11=h2+h3
+  a12=h2
+  a21=-h4
+  a22=h2-h3
+  b1=1-h2-h3
+  b2=h4
+end

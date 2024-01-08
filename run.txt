@@ -1,0 +1,35 @@
+run(Ts=1.0)
+  #Set true to stop execution
+  persistent stop
+
+  #Initialize internal state
+  persistent auto,track,t1=time(),Ts=Ts
+
+  while not(stop)
+    #Time when loop starts
+    t0=time()
+
+    #Read signals from runtime or hardware
+    r=get_r()
+    y=get_y()
+
+    protect auto,track,Ts
+    if auto
+      uaux=get_u0()+get_uff()
+      windup=get_windup()
+    else
+      uaux=get_uman()
+    end 
+
+    #Compute sample time factor Tx
+    t=time()
+    Tx=(t-t1)/Ts
+
+    #Invoke the PID update
+    PID(r,y,auto,windup,uaux,track,Tx)
+    unprotect auto,track,Ts
+
+    t1=t #State update
+    sleep(Ts-(t-t0)) #(Non-blocking) sleep
+  end
+end

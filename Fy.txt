@@ -1,0 +1,16 @@
+yf,dyf=Fy(y;Tx=1.0)
+  persistent TfTs=10.0 #Tf per nominal Ts
+  persistent a11,a12,a21,a22,b1,b2 #Params
+  persistent yf,dyf,Tx1 #Filter state
+  
+  #Rediscretize to match execution period
+  if not(Tx==Tx1)
+    a11,a12,a21,a22,b1,b2=zoh_Fy(TfTs,Tx)
+  end
+
+  #State update
+  yf1=yf
+  Tx1=Tx
+  yf=a11*yf1+a12*dyf+b1*y 
+  dyf=a21*yf1+a22*dyf+b2*y
+end
