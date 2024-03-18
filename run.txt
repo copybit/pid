@@ -3,7 +3,8 @@ run(Ts=1.0)
   persistent stop
 
   #Initialize internal state
-  persistent auto,track,t1=time(),Ts=Ts
+  persistent auto,track,windup,t_old=time(),
+             Ts=Ts
 
   while not(stop)
     #Time when loop starts
@@ -12,24 +13,19 @@ run(Ts=1.0)
     #Read signals from runtime or hardware
     r=get_r()
     y=get_y()
-
-    protect auto,track,Ts
-    if auto
-      uaux=get_u0()+get_uff()
-      windup=get_windup()
-    else
-      uaux=get_uman()
-    end 
-
-    #Compute sample time factor Tx
+    uff=get_uff()
+    utrack=get_utrack()
+    uman=get_uman()
+    
+    #Compute time between two executions
     t=time()
-    Tx=(t-t1)/Ts
+    Tx=(t-t_old)/Ts
 
     #Invoke the PID update
-    PID(r,y,auto,windup,uaux,track,Tx)
-    unprotect auto,track,Ts
+    PID(r,y,uff,uman,utrack,Tx,
+            track,auto,windup)
 
-    t1=t #State update
+    t_old=t #State update
     sleep(Ts-(t-t0)) #(Non-blocking) sleep
   end
 end
