@@ -1,5 +1,0 @@
-Fr(r;Tx=1.0)
-  persistent b=1.0 #Setpoint weight
-  #...Re-discretization as needed here
-  return b*r #Return weighted setpoint
-end
